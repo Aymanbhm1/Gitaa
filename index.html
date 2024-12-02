@@ -28,7 +28,6 @@
       border-top: 1px solid #205a6b;
       z-index: 10;
     }
-
     .group {
       display: flex;
       flex-direction: column;
@@ -48,11 +47,9 @@
       transition: transform 0.3s ease-in-out;
       font-size: 25px;
     }
-
     .group img {
       display: none;
     }
-
     .group1 {
       display: flex;
       flex-direction: column;
@@ -74,14 +71,12 @@
     .channels1 {
       margin-top: 44px;
     }
-
     #channel-list {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-around;
       margin-top: 20px;
     }
-
     .channel {
       background-color: #0499ad;
       border: 2px solid #205a6b;
@@ -97,7 +92,6 @@
       box-shadow: 0 4px 8px #205a6b;
       transition: transform 0.3s;
     }
-
     .channel img {
       margin: 5px;
       padding: 5px 0;
@@ -107,7 +101,6 @@
       height: 70px;
       border-radius: 10px;
     }
-
     #backBtn {
       display: none;
       position: fixed;
@@ -123,7 +116,6 @@
       cursor: pointer;
       font-size: 38px;
     }
-
     .navbar {
       position: fixed;
       top: 0;
@@ -139,7 +131,6 @@
       border-top: 1px solid #205a6b;
       z-index: 10;
     }
-
     h2 {
       position: relative;
       top: 0;
@@ -154,7 +145,39 @@
       font-size: 25px;
       z-index: 20;
     }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <button id="backBtn" onclick="showCategories()">&#8592;</button> 
+    <h2 id="pageTitle">RAYAN TV</h2>
+      <button id="searchButton" onclick="toggleSearchBox()"><i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+  </div>
+  <div id="header">
+    <div class="group1" onclick="loadCategories('live')">
+      <p>Channels</p>
+    </div>
+    <div class="group1" onclick="loadCategories('movies')">
+      <p>Aflam</p>
+    </div>
+    <div class="group1" onclick="loadCategories('series')">
+      <p>Series</p>
+    </div>
+    <div style="background-color:#fe9494;color: #fff; font-size:25px;box-shadow: none;background-color:#0499add7" class="group1"><i class="fa-solid fa-bars"></i></div>
+  </div>
+  <div class="channels1">
+    <div id="channel-list"></div>
+  </div>
+  
+  <div class="channels1">
+    <div id="searchContainer" class="search-container hidden">
+      <input type="text" id="searchBox" placeholder="ابحث عن قناة..." oninput="filterChannels()">
+    </div>
+    <div id="channel-list"></div>
+  </div>
 
+  <style>
     .search-container {
       display: flex;
       align-items: center;
@@ -186,12 +209,10 @@
       background: none;
       color: #fff;
     }
-
-    button {
+    button{
       border: none;
     }
-
-    #searchButton i {
+    #searchButton i{
       font-size: 25px;
       width: 24px;
       height: 24px;
@@ -206,44 +227,13 @@
     .hidden {
       display: none;
     }
-
   </style>
-</head>
-<body>
-  <div class="navbar">
-    <button id="backBtn" onclick="showCategories()">&#8592;</button> 
-    <h2 id="pageTitle">RAYAN TV</h2>
-    <button id="searchButton" onclick="toggleSearchBox()"><i class="fa-solid fa-magnifying-glass"></i></button>
-  </div>
-
-  <div id="header">
-    <div class="group1" onclick="loadCategories('live')">
-      <p>Channels</p>
-    </div>
-    <div class="group1" onclick="loadCategories('movies')">
-      <p>Aflam</p>
-    </div>
-    <div class="group1" onclick="loadCategories('series')">
-      <p>Series</p>
-    </div>
-    <div style="background-color:#fe9494;color: #fff; font-size:25px;box-shadow: none;background-color:#0499add7" class="group1"><i class="fa-solid fa-bars"></i></div>
-  </div>
-
-  <div class="channels1">
-    <div id="channel-list"></div>
-  </div>
-
-  <div class="channels1">
-    <div id="searchContainer" class="search-container hidden">
-      <input type="text" id="searchBox" placeholder="ابحث عن قناة..." oninput="filterChannels()">
-    </div>
-  </div>
 
   <script>
-    const API_URL = 'http://swnord.online:2052';
-    const USERNAME = '2397908905';
-    const PASSWORD = '00764816';
-
+    // استبدال الرابط بروتوكول IPTV Extreme API
+    const API_URL = 'https://swnord.online:2052';  // استبدل هذا بالرابط الخاص بك
+    const USERNAME = '2397908905';  // استبدل هذا باسم المستخدم الخاص بك
+    const PASSWORD = '00764816';  // استبدل هذا بكلمة المرور الخاصة بك
     let player;
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -276,66 +266,71 @@
         const div = document.createElement('div');
         div.className = 'group';
         div.innerHTML = `<img src="category_icon.png"><p>${category.category_name}</p>`;
-        div.onclick = () => loadChannels(category.category_id, type, category.category_name);
+        div.onclick = () => loadChannels(category.category_id, type, category.category_name); // Pass category name
         sidebar.appendChild(div);
       });
     }
 
     async function loadChannels(categoryId, type, categoryName) {
-      document.getElementById('backBtn').style.display = 'block';
-      document.getElementById('pageTitle').innerText = categoryName; 
-      const endpoint = type === 'live' ? `get_live_streams&category_id=${categoryId}` : type === 'movies' ? `get_vod_streams&category_id=${categoryId}` : `get_series&category_id=${categoryId}`;
-      const channels = await fetchData(endpoint);
-      displayChannels(channels);
+      const endpoint = type === 'live' ? 'get_live_channels' : type === 'movies' ? 'get_vod_channels' : 'get_series_channels';
+      const channels = await fetchData(`${endpoint}&category_id=${categoryId}`);
+      displayChannels(channels, categoryName);
     }
 
-    function displayChannels(channels) {
-      const channelList = document.getElementById('channel-list');
-      channelList.innerHTML = '';
+    function displayChannels(channels, categoryName) {
+      const sidebar = document.getElementById('channel-list');
+      sidebar.innerHTML = ''; // Clear previous channels
+
+      // Display category name in title
+      document.getElementById('pageTitle').innerText = categoryName;
+
+      // Display the channels
       channels.forEach(channel => {
-        const channelDiv = document.createElement('div');
-        channelDiv.className = 'channel';
-        channelDiv.innerHTML = `
-          <img src="${channel.logo}" alt="Channel Logo">
+        const div = document.createElement('div');
+        div.className = 'channel';
+        div.innerHTML = `
+          <img src="${channel.logo}" alt="${channel.name}">
           <p>${channel.name}</p>
-          <button onclick="playChannel('${channel.stream_url}')">مشاهدة</button>
         `;
-        channelList.appendChild(channelDiv);
+        div.onclick = () => playChannel(channel.url);
+        sidebar.appendChild(div);
       });
+      document.getElementById('backBtn').style.display = 'inline-block'; // Show back button
     }
 
-    function playChannel(streamUrl) {
-      const videoPlayer = document.createElement('video');
-      videoPlayer.id = 'plyr-video';
-      videoPlayer.setAttribute('controls', true);
-      videoPlayer.setAttribute('autoplay', true);
-      videoPlayer.innerHTML = `<source src="${streamUrl}" type="video/mp4">`;
-      document.body.appendChild(videoPlayer);
-      player = new Plyr('#plyr-video');
+    function playChannel(url) {
+      const playerContainer = document.createElement('div');
+      playerContainer.innerHTML = `
+        <video id="plyr-video" controls>
+          <source src="${url}" type="application/x-mpegURL">
+        </video>
+      `;
+      document.body.appendChild(playerContainer);
+      player = new Plyr('#plyr-video'); // Initialize Plyr for video player
+    }
+
+    function showCategories() {
+      // Reset the page to category view
+      loadCategories('live');
+      document.getElementById('backBtn').style.display = 'none'; // Hide back button
     }
 
     function toggleSearchBox() {
-      const searchBox = document.getElementById('searchContainer');
-      searchBox.classList.toggle('hidden');
+      const searchContainer = document.getElementById('searchContainer');
+      searchContainer.classList.toggle('hidden');
     }
 
     function filterChannels() {
-      const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+      const query = document.getElementById('searchBox').value.toLowerCase();
       const channels = document.querySelectorAll('.channel');
       channels.forEach(channel => {
         const channelName = channel.querySelector('p').innerText.toLowerCase();
-        if (channelName.includes(searchTerm)) {
+        if (channelName.includes(query)) {
           channel.style.display = 'block';
         } else {
           channel.style.display = 'none';
         }
       });
-    }
-
-    function showCategories() {
-      document.getElementById('backBtn').style.display = 'none';
-      document.getElementById('pageTitle').innerText = 'RAYAN TV';
-      loadCategories('live');
     }
   </script>
 </body>
